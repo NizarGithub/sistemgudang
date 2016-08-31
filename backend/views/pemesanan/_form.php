@@ -9,7 +9,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
 /* @var $modelDetile app\modelDetiles\Pesanan */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
+<!-- Tambah comment -->
 <div class="pesanan-form">
 	
     <?php $form = ActiveForm::begin(['id' => 'dynamic-form']); ?>
@@ -18,7 +18,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
 			<div class="row" style="margin-bottom : 0;">
 				<div class="col-md-12">
 					<?= $form->field($model, 'no_pesanan')->textInput(['maxlength' => true, 'disabled'=>true]) ?>
-
+					
 					
 					<?= $form->field($model, 'tgl_pesanan')->widget(DatePicker::classname(), [
 						'value'=>date('yyyy-mm-dd', strtotime('+2 days')),
