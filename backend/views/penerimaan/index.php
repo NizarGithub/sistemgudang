@@ -46,6 +46,17 @@ $this->params['breadcrumbs'][] = $this->title;
 					[
 						'attribute'=>'tgl_penerimaan',
 						'hAlign'=>'center',
+						'format'=>'date',
+						'filterType'=>GridView::FILTER_DATE,
+						'filterWidgetOptions'=>[
+							'value'=>date('yyyy-mm-dd', strtotime('+2 days')),
+							'options'=>['placeholder'=>'Pilih Tanggal'],
+							'pluginOptions'=>[
+								'autoclose'=>true, 
+								'format'=>'yyyy-mm-dd',
+								'todayHighlight'=>true
+							]
+						]
 						
 					],
 					[

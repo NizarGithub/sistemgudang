@@ -50,6 +50,9 @@ class PenerimaanSearch extends Penerimaan
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+			'pagination'=>[
+				'pageSize'=>5,
+			]
         ]);
 
         $this->load($params);
@@ -69,7 +72,6 @@ class PenerimaanSearch extends Penerimaan
 
         $query->andFilterWhere(['like', 'status_penerimaan', $this->status_penerimaan]);
 		$query->orFilterWhere(['like', 'pesanan.no_pesanan', $this->no_pesanan]);
-
         return $dataProvider;
     }
 }

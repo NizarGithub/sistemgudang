@@ -49,6 +49,9 @@ class PengirimanSearch extends Pengiriman
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+			'pagination'=>[
+				'pageSize'=>5,
+			]
         ]);
 
         $this->load($params);

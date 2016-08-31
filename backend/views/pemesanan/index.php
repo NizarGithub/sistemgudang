@@ -15,11 +15,22 @@ $this->params['breadcrumbs'][] = $this->title;
 		<div class="panel-heading">
 			<center><h1 class="panel-title"><?= Html::encode($this->title) ?></h1></center>
 		</div>
+		<?php 
+			$layout = <<< HTML
+<div class="pull-right">
+    {summary}
+</div>
+<div class="clearfix"></div>
+{items}
+<center style="margin-bottom:0px; padding-bottom:0px;">{pager}</center>
+HTML;
+		?>
 		<div class="panel-body">
 			<?= GridView::widget([
 				'dataProvider' => $dataProvider,
 				'filterModel' => $searchModel,
 				'responsiveWrap'=>false,
+				'layout'=>$layout,
 				'columns' => [
 					['class' => 'yii\grid\SerialColumn'],
 
@@ -32,6 +43,17 @@ $this->params['breadcrumbs'][] = $this->title;
 					[
 						'attribute'=>'tgl_pesanan',
 						'hAlign'=>'center',
+						'filterType'=>GridView::FILTER_DATE,
+						'format'=>'date',
+						'filterWidgetOptions'=>[
+							'value'=>date('yyyy-mm-dd', strtotime('+2 days')),
+							'options'=>['placeholder'=>'Pilih Tanggal'],
+							'pluginOptions'=>[
+								'autoclose'=>true, 
+								'format'=>'yyyy-mm-dd',
+								'todayHighlight'=>true
+							]
+						]
 					],
 					[
 						'attribute'=>'nama_supplier',
