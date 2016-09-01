@@ -24,20 +24,14 @@ use yii\widgets\Pjax;
     <section class="content">
 		
         <?php if(\Yii::$app->getSession()->hasFlash('error')){ ?>
+			
 			<?= Growl::widget([
-				'type' => Growl::TYPE_WARNING,
-				'title' => 'Warning!',
+				'type' => Growl::TYPE_DANGER,
+				'title' => 'Ada Kesalahan!',
 				'icon' => 'glyphicon glyphicon-exclamation-sign',
 				'body' => Yii::$app->session->getFlash('error'),
 				'showSeparator' => true,
-				'delay' => 3000,
-				'pluginOptions' => [
-					'showProgressbar' => true,
-					'placement' => [
-						'from' => 'top',
-						'align' => 'right',
-					]
-				]
+				
 			]);?>
 		<?php } ?>
 		

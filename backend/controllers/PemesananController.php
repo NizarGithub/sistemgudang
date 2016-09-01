@@ -67,83 +67,89 @@ class PemesananController extends Controller
      */
     public function actionCreate()
     {
-        $modelPesanan = new Pesanan;
-		$kode_generate = $modelPesanan->generateKodePesanan();
-		$modelPesanan->no_pesanan = $kode_generate;
-		$persediaan_barang = Barang::find()->all();
-		
-        $modelListDetile = [new DetilePesanan];
-        if ($modelPesanan->load(Yii::$app->request->post())) {
-
-            $modelListDetile = Model::createMultiple(DetilePesanan::classname());
-            Model::loadMultiple($modelListDetile, Yii::$app->request->post());
-
-            // ajax validation
-            if (Yii::$app->request->isAjax) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ArrayHelper::merge(
-                    ActiveForm::validateMultiple($modelListDetile),
-                    ActiveForm::validate($modelPesanan)
-                );
-            }
-
-            // validate all models
-            $valid = $modelPesanan->validate();
-            $valid = Model::validateMultiple($modelListDetile) && $valid;
-
-            if ($valid) {
-                $transaction = \Yii::$app->db->beginTransaction();
-                try {
-                    if ($flag = $modelPesanan->save(false)) {
-						
-                        foreach ($modelListDetile as $modelDetile) {
-                            $modelDetile->id_pesanan = $modelPesanan->id;
-							if($modelDetile->stok_s == null || $modelDetile->stok_s ==""){
-								$modelDetile->stok_s = 0;
-							}
-							
-							if($modelDetile->stok_m == null || $modelDetile->stok_m ==""){
-								$modelDetile->stok_m = 0;
-							}
-
-							if($modelDetile->stok_l == null || $modelDetile->stok_l ==""){
-								$modelDetile->stok_l = 0;
-							}
-							
-							if($modelDetile->stok_xl == null || $modelDetile->stok_xl ==""){
-								$modelDetile->stok_xl = 0;
-							}
-
-							if($modelDetile->stok_n == null || $modelDetile->stok_n ==""){
-								$modelDetile->stok_n = 0;
-							}
-							
-                            if(!($flag = $modelDetile->save(false))) {
-                                $transaction->rollBack();
-                                break;
-                            }
-								
-							
-                        }
-                    }
-					
-					if($flag){
-						$transaction->commit();
-						return $this->redirect(['view', 'id' => $modelPesanan->id]);
-					}
-					
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                }
-            }
-        }
-
-        return $this->render('create', [
+		if(\Yii::$app->user->can('tambahPemesanan')){
+			$modelPesanan = new Pesanan;
+			$kode_generate = $modelPesanan->generateKodePesanan();
+			$modelPesanan->no_pesanan = $kode_generate;
+			$persediaan_barang = Barang::find()->all();
 			
-            'modelPesanan' => $modelPesanan,
-            'modelListDetile' => (empty($modelListDetile)) ? [new DetilePesanan] : $modelListDetile,
-			'persediaan_barang'=>$persediaan_barang,
-        ]);
+			$modelListDetile = [new DetilePesanan];
+			if ($modelPesanan->load(Yii::$app->request->post())) {
+
+				$modelListDetile = Model::createMultiple(DetilePesanan::classname());
+				Model::loadMultiple($modelListDetile, Yii::$app->request->post());
+
+				// ajax validation
+				if (Yii::$app->request->isAjax) {
+					Yii::$app->response->format = Response::FORMAT_JSON;
+					return ArrayHelper::merge(
+						ActiveForm::validateMultiple($modelListDetile),
+						ActiveForm::validate($modelPesanan)
+					);
+				}
+
+				// validate all models
+				$valid = $modelPesanan->validate();
+				$valid = Model::validateMultiple($modelListDetile) && $valid;
+
+				if ($valid) {
+					$transaction = \Yii::$app->db->beginTransaction();
+					try {
+						if ($flag = $modelPesanan->save(false)) {
+							
+							foreach ($modelListDetile as $modelDetile) {
+								$modelDetile->id_pesanan = $modelPesanan->id;
+								if($modelDetile->stok_s == null || $modelDetile->stok_s ==""){
+									$modelDetile->stok_s = 0;
+								}
+								
+								if($modelDetile->stok_m == null || $modelDetile->stok_m ==""){
+									$modelDetile->stok_m = 0;
+								}
+
+								if($modelDetile->stok_l == null || $modelDetile->stok_l ==""){
+									$modelDetile->stok_l = 0;
+								}
+								
+								if($modelDetile->stok_xl == null || $modelDetile->stok_xl ==""){
+									$modelDetile->stok_xl = 0;
+								}
+
+								if($modelDetile->stok_n == null || $modelDetile->stok_n ==""){
+									$modelDetile->stok_n = 0;
+								}
+								
+								if(!($flag = $modelDetile->save(false))) {
+									$transaction->rollBack();
+									break;
+								}
+									
+								
+							}
+						}
+						
+						if($flag){
+							$transaction->commit();
+							return $this->redirect(['view', 'id' => $modelPesanan->id]);
+						}
+						
+					} catch (Exception $e) {
+						$transaction->rollBack();
+					}
+				}
+			}
+
+			return $this->render('create', [
+				
+				'modelPesanan' => $modelPesanan,
+				'modelListDetile' => (empty($modelListDetile)) ? [new DetilePesanan] : $modelListDetile,
+				'persediaan_barang'=>$persediaan_barang,
+			]);
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Anda Tidak mempunyai hak akses untuk melakukan penambahan');
+			return $this->redirect(['index']);
+		}
+        
     }
 
     /**
@@ -154,16 +160,22 @@ class PemesananController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-		$list_barang = $model->getListBarang();
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-				'list_barang'=>$list_barang,
-            ]);
-        }
+		if(\Yii::$app->user->can('updatePemesanan')){
+			$model = $this->findModel($id);
+			$list_barang = $model->getListBarang();
+			if ($model->load(Yii::$app->request->post()) && $model->save()) {
+				return $this->redirect(['view', 'id' => $model->id]);
+			} else {
+				return $this->render('update', [
+					'model' => $model,
+					'list_barang'=>$list_barang,
+				]);
+			}
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Anda Tidak mempunyai hak akses untuk melakukan pengubahan data');
+			return $this->redirect(['index']);
+		}
+        
     }
 
     /**
@@ -174,16 +186,22 @@ class PemesananController extends Controller
      */
     public function actionDelete($id)
     {
-        $model = $this->findModel($id);
+		if(\Yii::$app->user->can('deletePemesanan')){
+			$model = $this->findModel($id);
 		
-		if($model->cekKonfirmasi()){
-			\Yii::$app->getSession()->setFlash('error', 'Gagal Menghapus Pemesanan : #'.$model->id);
-		}else{
-			
-			$model->delete();
-		}
+			if($model->cekKonfirmasi()){
+				\Yii::$app->getSession()->setFlash('error', 'Gagal Menghapus Pemesanan : #'.$model->id);
+			}else{
+				
+				$model->delete();
+			}
 
-        return $this->redirect(['index']);
+			return $this->redirect(['index']);
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Anda Tidak mempunyai hak akses untuk melakukan penghapusan data');
+			return $this->redirect(['index']);
+		}
+        
     }
 
     /**

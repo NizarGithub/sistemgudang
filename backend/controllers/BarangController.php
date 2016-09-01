@@ -69,43 +69,50 @@ class BarangController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Barang();
-		$kode_generate = $model->generateKodeBarang();
-		
-		$kode = $model->getListKodeJenis();
-		$model->kode_barang = $kode_generate;
-        if ($model->load(Yii::$app->request->post())) {
+		if (\Yii::$app->user->can("tambahBarang")) {
+			$model = new Barang();
+			$kode_generate = $model->generateKodeBarang();
 			
-			if($model->stok_s == null || $model->stok_s ==""){
-				$model->stok_s = 0;
-			}
-			
-			if($model->stok_m == null || $model->stok_m ==""){
-				$model->stok_m = 0;
-			}
+			$kode = $model->getListKodeJenis();
+			$model->kode_barang = $kode_generate;
+			if ($model->load(Yii::$app->request->post())) {
+				
+				if($model->stok_s == null || $model->stok_s ==""){
+					$model->stok_s = 0;
+				}
+				
+				if($model->stok_m == null || $model->stok_m ==""){
+					$model->stok_m = 0;
+				}
 
-			if($model->stok_l == null || $model->stok_l ==""){
-				$model->stok_l = 0;
-			}
-			
-			if($model->stok_xl == null || $model->stok_xl ==""){
-				$model->stok_xl = 0;
-			}
+				if($model->stok_l == null || $model->stok_l ==""){
+					$model->stok_l = 0;
+				}
+				
+				if($model->stok_xl == null || $model->stok_xl ==""){
+					$model->stok_xl = 0;
+				}
 
-			if($model->stok_n == null || $model->stok_n ==""){
-				$model->stok_n = 0;
+				if($model->stok_n == null || $model->stok_n ==""){
+					$model->stok_n = 0;
+				}
+				
+				if($model->save()){
+					return $this->redirect(['view', 'id' => $model->id]);
+				}
+				
+			} else {
+				return $this->render('create', [
+					'model' => $model,
+					'kode_jenis'=>$kode,
+				]);
 			}
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Anda Tidak Mempunyai Hak Akses untuk Melakukan Penambahan');
 			
-			if($model->save()){
-				return $this->redirect(['view', 'id' => $model->id]);
-			}
-            
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-				'kode_jenis'=>$kode,
-            ]);
-        }
+			return $this->redirect(['index']);
+		}
+        
     }
 
     /**
@@ -115,39 +122,45 @@ class BarangController extends Controller
      * @return mixed
      */
     public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-		$kode = $model->getListKodeJenis();
-        if ($model->load(Yii::$app->request->post())) {
-			if($model->stok_s == null || $model->stok_s ==""){
-				$model->stok_s = 0;
-			}
-			
-			if($model->stok_m == null || $model->stok_m ==""){
-				$model->stok_m = 0;
-			}
+    {	if (\Yii::$app->user->can('updateBarang')) {
+			$model = $this->findModel($id);
+			$kode = $model->getListKodeJenis();
+			if ($model->load(Yii::$app->request->post())) {
+				if($model->stok_s == null || $model->stok_s ==""){
+					$model->stok_s = 0;
+				}
+				
+				if($model->stok_m == null || $model->stok_m ==""){
+					$model->stok_m = 0;
+				}
 
-			if($model->stok_l == null || $model->stok_l ==""){
-				$model->stok_l = 0;
-			}
-			
-			if($model->stok_xl == null || $model->stok_xl ==""){
-				$model->stok_xl = 0;
-			}
+				if($model->stok_l == null || $model->stok_l ==""){
+					$model->stok_l = 0;
+				}
+				
+				if($model->stok_xl == null || $model->stok_xl ==""){
+					$model->stok_xl = 0;
+				}
 
-			if($model->stok_n == null || $model->stok_n ==""){
-				$model->stok_n = 0;
+				if($model->stok_n == null || $model->stok_n ==""){
+					$model->stok_n = 0;
+				}
+				
+				if($model->save()){
+					return $this->redirect(['view', 'id' => $model->id]);
+				}
+			} else {
+				return $this->render('update', [
+					'model' => $model,
+					'kode_jenis'=>$kode,
+				]);
 			}
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Anda Tidak Mempunyai Hak Akses untuk Melakukan Perubahan');
 			
-			if($model->save()){
-				return $this->redirect(['view', 'id' => $model->id]);
-			}
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-				'kode_jenis'=>$kode,
-            ]);
-        }
+			return $this->redirect(['index']);
+		}
+        
     }
 
     /**
@@ -157,10 +170,18 @@ class BarangController extends Controller
      * @return mixed
      */
     public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
+    {	
+		if (\Yii::$app->user->can('deleteBarang')) {
+			$this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+			return $this->redirect(['index']);
+			
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Anda Tidak Mempunyai Hak Akses untuk Melakukan Penghapusan');
+			
+			return $this->redirect(['index']);
+		}
+        
     }
 
     /**

@@ -63,16 +63,22 @@ class TokoController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Toko();
-		$kode_generate = $model->generateKodeToko();
-		$model->kode_toko = $kode_generate;
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
+		if(Yii::$app->user->can('tambahToko')){
+			$model = new Toko();
+			$kode_generate = $model->generateKodeToko();
+			$model->kode_toko = $kode_generate;
+			if ($model->load(Yii::$app->request->post()) && $model->save()) {
+				return $this->redirect(['view', 'id' => $model->id]);
+			} else {
+				return $this->render('create', [
+					'model' => $model,
+				]);
+			}
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Anda tidak mempunyai hak akses untuk melakukan penambahan data');
+			return $this->redirect(['index']);
+		}
+        
     }
 
     /**
@@ -83,15 +89,21 @@ class TokoController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+		if(Yii::$app->user->can('updateToko')){
+			$model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
+			if ($model->load(Yii::$app->request->post()) && $model->save()) {
+				return $this->redirect(['view', 'id' => $model->id]);
+			} else {
+				return $this->render('update', [
+					'model' => $model,
+				]);
+			}	
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Anda tidak mempunyai hak untuk melakukan perubahan data');
+			return $this->redirect(['index']);
+		}
+        
     }
 
     /**
@@ -102,9 +114,17 @@ class TokoController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+		if(Yii::$app->user->can('deleteToko')){
+			$this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+			return $this->redirect(['index']);
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Anda tidak mempunyai hak akses untuk melakukan penghapusan data');
+			
+			return $this->redirect(['index']);
+			
+		}
+        
     }
 
     /**

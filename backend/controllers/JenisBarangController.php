@@ -75,16 +75,23 @@ class JenisBarangController extends Controller
      */
     public function actionCreate()
     {
-        $model = new JenisBarang();
-		$kode_generate = $model->generateKodeJenis();
-		$model->kode_jenis = $kode_generate;
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
+		if(Yii::$app->user->can('tambahJenis')){
+			$model = new JenisBarang();
+			$kode_generate = $model->generateKodeJenis();
+			$model->kode_jenis = $kode_generate;
+			if ($model->load(Yii::$app->request->post()) && $model->save()) {
+				return $this->redirect(['view', 'id' => $model->id]);
+			} else {
+				return $this->render('create', [
+					'model' => $model,
+				]);
+			}
+		}else{
+			Yii::$app->getSession()->setFlash('error','Maaf, Anda tidak mempunyai hak akses dalam melakukan penambahan data');
+			
+			return $this->redirect(['index']);
+		}
+        
     }
 
     /**
@@ -95,15 +102,21 @@ class JenisBarangController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+		if(Yii::$app->user->can('updateJenis')){
+			$model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
+			if ($model->load(Yii::$app->request->post()) && $model->save()) {
+				return $this->redirect(['view', 'id' => $model->id]);
+			} else {
+				return $this->render('update', [
+					'model' => $model,
+				]);
+			}
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Maaf Anda tidak memiliki Hak Akses untuk melakukan Perubahan Data');
+			return $this->redirect(['index']);
+		}
+        
     }
 
     /**
@@ -114,9 +127,14 @@ class JenisBarangController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+		if(Yii::$app->user->can('deleteJenis')){
+			$this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+			return $this->redirect(['index']);
+		}else{
+			Yii::$app->getSession->setFlash('error', 'Maaf Anda tidak memiliki hak akses untuk melakukan penghapusan data');
+		}
+        
     }
 
     /**

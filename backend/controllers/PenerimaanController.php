@@ -67,31 +67,37 @@ class PenerimaanController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Penerimaan();
-		$kode_pesan = $model->getListPesanan();
-        if ($model->load(Yii::$app->request->post())) {
-			if($model->save() && ($model->status_penerimaan == 'diterima')){
-				$detile_pesanan = $model->getNoPesanan()->one()->getDetilePesanans()->all();
-				
-				foreach($detile_pesanan as $pesanan){
-					$barang = Barang::find()->where(['id'=>$pesanan->getBarang()->one()->id])->one();
+		if(Yii::$app->user->can('tambahPenerimaan')){
+			$model = new Penerimaan();
+			$kode_pesan = $model->getListPesanan();
+			if ($model->load(Yii::$app->request->post())) {
+				if($model->save() && ($model->status_penerimaan == 'diterima')){
+					$detile_pesanan = $model->getNoPesanan()->one()->getDetilePesanans()->all();
 					
-					$barang->stok_s = $barang->stok_s+$pesanan->stok_s;
-					$barang->stok_m = $barang->stok_m+$pesanan->stok_m;
-					$barang->stok_l = $barang->stok_l+$pesanan->stok_l;
-					$barang->stok_xl = $barang->stok_xl+$pesanan->stok_xl;
-					$barang->stok_n = $barang->stok_n+$pesanan->stok_n;
-					$barang->save();
+					foreach($detile_pesanan as $pesanan){
+						$barang = Barang::find()->where(['id'=>$pesanan->getBarang()->one()->id])->one();
+						
+						$barang->stok_s = $barang->stok_s+$pesanan->stok_s;
+						$barang->stok_m = $barang->stok_m+$pesanan->stok_m;
+						$barang->stok_l = $barang->stok_l+$pesanan->stok_l;
+						$barang->stok_xl = $barang->stok_xl+$pesanan->stok_xl;
+						$barang->stok_n = $barang->stok_n+$pesanan->stok_n;
+						$barang->save();
+					}
+					
 				}
-				
+				return $this->redirect(['view', 'id' => $model->id]);
+			} else {
+				return $this->render('create', [
+					'model' => $model,
+					'kode_pesan'=>$kode_pesan
+				]);
 			}
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-				'kode_pesan'=>$kode_pesan
-            ]);
-        }
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Anda tidak memiliki hak akses untuk melakukan penambahan Penerimaan');
+			$this->redirect(['index']);
+		}
+        
     }
 
     /**
@@ -102,31 +108,37 @@ class PenerimaanController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-		$kode_pesan = $model->getListPesanan();
-        if ($model->load(Yii::$app->request->post())) {
-			if($model->save() && ($model->status_penerimaan == 'diterima')){
-				$detile_pesanan = $model->getNoPesanan()->one()->getDetilePesanans()->all();
-				
-				foreach($detile_pesanan as $pesanan){
-					$barang = Barang::find()->where(['id'=>$pesanan->getBarang()->one()->id])->one();
+		if(Yii::$app->user->can('updatePenerimaan')){
+			$model = $this->findModel($id);
+			$kode_pesan = $model->getListPesanan();
+			if ($model->load(Yii::$app->request->post())) {
+				if($model->save() && ($model->status_penerimaan == 'diterima')){
+					$detile_pesanan = $model->getNoPesanan()->one()->getDetilePesanans()->all();
 					
-					$barang->stok_s = $barang->stok_s+$pesanan->stok_s;
-					$barang->stok_m = $barang->stok_m+$pesanan->stok_m;
-					$barang->stok_l = $barang->stok_l+$pesanan->stok_l;
-					$barang->stok_xl = $barang->stok_xl+$pesanan->stok_xl;
-					$barang->stok_n = $barang->stok_n+$pesanan->stok_n;
-					$barang->save();
+					foreach($detile_pesanan as $pesanan){
+						$barang = Barang::find()->where(['id'=>$pesanan->getBarang()->one()->id])->one();
+						
+						$barang->stok_s = $barang->stok_s+$pesanan->stok_s;
+						$barang->stok_m = $barang->stok_m+$pesanan->stok_m;
+						$barang->stok_l = $barang->stok_l+$pesanan->stok_l;
+						$barang->stok_xl = $barang->stok_xl+$pesanan->stok_xl;
+						$barang->stok_n = $barang->stok_n+$pesanan->stok_n;
+						$barang->save();
+					}
+					
 				}
-				
+				return $this->redirect(['view', 'id' => $model->id]);
+			} else {
+				return $this->render('update', [
+					'model' => $model,
+					'kode_pesan'=>$kode_pesan
+				]);
 			}
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-				'kode_pesan'=>$kode_pesan
-            ]);
-        }
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Anda tidak memiliki hak akses untuk melakukan perubahan data Penerimaan');
+			return $this->redirect(['index']);
+		}
+        
     }
 
     /**
@@ -137,24 +149,30 @@ class PenerimaanController extends Controller
      */
     public function actionDelete($id)
     {
-        $model = $this->findModel($id);
+		if(Yii::$app->user->can('deletePenerimaan')){
+			$model = $this->findModel($id);
 		
-		if($model->delete() && ($model->status_penerimaan == 'diterima')){
-			$detile_pesanan = $model->getNoPesanan()->one()->getDetilePesanans()->all();
-				
-				foreach($detile_pesanan as $pesanan){
-					$barang = Barang::find()->where(['id'=>$pesanan->getBarang()->one()->id])->one();
+			if($model->delete() && ($model->status_penerimaan == 'diterima')){
+				$detile_pesanan = $model->getNoPesanan()->one()->getDetilePesanans()->all();
 					
-					$barang->stok_s = $barang->stok_s-$pesanan->stok_s;
-					$barang->stok_m = $barang->stok_m-$pesanan->stok_m;
-					$barang->stok_l = $barang->stok_l-$pesanan->stok_l;
-					$barang->stok_xl = $barang->stok_xl-$pesanan->stok_xl;
-					$barang->stok_n = $barang->stok_n-$pesanan->stok_n;
-					$barang->save();
-				}
+					foreach($detile_pesanan as $pesanan){
+						$barang = Barang::find()->where(['id'=>$pesanan->getBarang()->one()->id])->one();
+						
+						$barang->stok_s = $barang->stok_s-$pesanan->stok_s;
+						$barang->stok_m = $barang->stok_m-$pesanan->stok_m;
+						$barang->stok_l = $barang->stok_l-$pesanan->stok_l;
+						$barang->stok_xl = $barang->stok_xl-$pesanan->stok_xl;
+						$barang->stok_n = $barang->stok_n-$pesanan->stok_n;
+						$barang->save();
+					}
+			}
+			
+			return $this->redirect(['index']);
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Anda tidak memiliki hak akses untuk melakukan penghapusan data Penerimaan');
+			$this->redirect(['index']);
 		}
-		
-        return $this->redirect(['index']);
+        
     }
 
     /**
