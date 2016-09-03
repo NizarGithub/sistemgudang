@@ -11,17 +11,22 @@ $this->params['breadcrumbs'][] = ['label' => '#'.$model->kode_jenis, 'url' => ['
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="jenis-barang-update" style="padding-top:15px;">
-	<section class="box box-default">
-		<div class="box-header">
-			<h1 class="box-title"><?= Html::encode($this->title) ?></h1>
-			
+	<div class="row">
+		<div class="col-md-6">
+			<section class="box box-default">
+				<div class="box-header">
+					<h1 class="box-title"><?= Html::encode($this->title) ?></h1>
+					
+				</div>
+				<div class="box-body">
+					<?= $this->render('_form', [
+						'model' => $model,
+					]) ?>
+				</div>
+			</section>
 		</div>
-		<div class="box-body">
-			<?= $this->render('_form', [
-				'model' => $model,
-			]) ?>
-		</div>
-	</section>
+	</div>
+	
     
 
     

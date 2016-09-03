@@ -3,9 +3,13 @@ namespace backend\controllers;
 
 use Yii;
 use yii\web\Controller;
+use app\models\Penerimaan;
+use app\models\Pengiriman;
+use app\models\Barang;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
+use yii\helpers\Json;
 
 /**
  * Site controller
@@ -63,8 +67,40 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+		if(Yii::$app->user->can('indexView')){
+			$penerimaan = Penerimaan::find()->orderBy(['tgl_penerimaan'=>SORT_DESC])->limit(5)->all();
+			$pengiriman = Pengiriman::find()->orderBy(['tgl_pengiriman'=>SORT_DESC])->limit(5)->all();
+			$barang = Barang::find()->all();
+			$jumlah_s = Barang::find()->sum('stok_s');
+			$jumlah_m = Barang::find()->sum('stok_m');
+			$jumlah_l = Barang::find()->sum('stok_l');
+			$jumlah_xl = Barang::find()->sum('stok_xl');
+			$jumlah_n = Barang::find()->sum('stok_n');
+			
+			$total = $jumlah_s+$jumlah_m+$jumlah_l+$jumlah_xl+$jumlah_n;
+			return $this->render('index', [
+				'modelPenerimaan'=>$penerimaan,
+				'modelPengiriman'=>$pengiriman,
+				'modelBarang'=>$this->getDataChart($barang, $total),
+			]);
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Anda tidak mempunyai hak akses untuk mengakses halaman ini.');
+			$this->goHome();
+		}
+        
     }
+	
+	protected function getDataChart($data, $jumlahBarang){
+		$dataChart= array();
+		
+		foreach($data as $barang){
+			$persen = ((int)$barang->stok_s)/100 * $jumlahBarang;
+			$hasil = ['name'=>$barang->nama_barang, 'y'=>$persen];
+			array_push($dataChart, $hasil);
+		}
+		
+		return Json::encode($dataChart);
+	}
 	
 	public function actionTambahRole(){
 		$auth = Yii::$app->authManager;

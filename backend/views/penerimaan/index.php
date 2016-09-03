@@ -15,10 +15,21 @@ $this->params['breadcrumbs'][] = $this->title;
 		<div class="panel-heading">
 			<center><h1 class="panel-title"><?= Html::encode($this->title) ?></h1></center>
 		</div>
+		<?php 
+			$layout = <<< HTML
+<div class="pull-right">
+    {summary}
+</div>
+<div class="clearfix"></div>
+{items}
+<center style="margin-bottom:0px; padding-bottom:0px;">{pager}</center>
+HTML;
+		?>
 		<div class="panel-body">
 			<?= GridView::widget([
 				'dataProvider' => $dataProvider,
 				'filterModel' => $searchModel,
+				'layout'=>$layout,
 				'responsiveWrap'=>false,
 				'columns' => [
 					['class' => 'kartik\grid\SerialColumn'],

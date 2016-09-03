@@ -34,6 +34,7 @@ if (Yii::$app->controller->action->id === 'login') {
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <?= Html::csrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
+		
         <?php $this->head() ?>
     </head>
     <body class="layout-boxed hold-transition skin-blue sidebar-mini <?= \dmstr\helpers\AdminLteHelper::skinClass() ?>">
@@ -59,6 +60,7 @@ if (Yii::$app->controller->action->id === 'login') {
     </div>
 
     <?php $this->endBody() ?>
+	<script src="http://code.highcharts.com/highcharts.js"></script>
     </body>
     </html>
     <?php $this->endPage() ?>

@@ -31,6 +31,20 @@ class RbacController extends Controller
 		
 	}
 	
+	public function actionAuthViewIndex(){
+		$auth = Yii::$app->authManager;
+		
+		$indexView = $auth->createPermission('indexView');
+		$indexView->description = "Permission untuk halaman awal";
+		$auth->add($indexView);
+		
+		$admin = $auth->getRole('admin');
+		$user = $auth->getRole('user');
+		
+		$auth->addChild($admin, $indexView);
+		$auth->addChild($user, $indexView);
+	}
+	
 	public function actionAuthManajemenUser(){
 		$auth = Yii::$app->authManager;
 		

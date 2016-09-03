@@ -23,7 +23,7 @@ Yii::$app->name = 'Manajemen Gudang';
                 
                 <li class="user-menu">
                     <a class="dropdown-toggle disable">
-                        <span class="hidden-xs"><i class="fa fa-user"></i>&nbsp;<span>Hello &nbsp;<?= Yii::$app->user->identity->username : ""?>! </span></span>
+                        <span class="hidden-xs"><i class="fa fa-user"></i>&nbsp;<span>Hello &nbsp;<?= Yii::$app->user->identity->username ?>! </span></span>
                     </a>
                     
                 </li>

@@ -124,6 +124,24 @@ class PengirimanController extends Controller
 									foreach($detile_pesanan as $pesanan){
 										$barang = Barang::find()->where(['id'=>$pesanan->getKodeBarang()->one()->id])->one();
 										
+										if(!($pesanan->stok_s <= $barang->stok_s)){
+											Yii::$app->getSession()->setFlash('error', 'Stok Barang dengan ukuran S tidak mencukupi');
+											return $this->redirect(['index']);
+										}elseif(!($pesanan->stok_m <= $barang->stok_m)){
+											Yii::$app->getSession()->setFlash('error', 'Stok Barang dengan ukuran M tidak mencukupi');
+											return $this->redirect(['index']);
+										}elseif(!($pesanan->stok_l <= $barang->stok_l)){
+											Yii::$app->getSession()->setFlash('error', 'Stok Barang dengan ukuran L tidak mencukupi');
+											return $this->redirect(['index']);
+										}elseif(!($pesanan->stok_xl <= $barang->stok_xl)){
+											Yii::$app->getSession()->setFlash('error', 'Stok Barang dengan ukuran XL tidak mencukupi');
+											return $this->redirect(['index']);
+										}elseif(!($pesanan->stok_n <= $barang->stok_n)){
+											Yii::$app->getSession()->setFlash('error', 'Stok Barang dengan ukuran N/A tidak mencukupi');
+											return $this->redirect(['index']);
+										}
+										
+										
 										$barang->stok_s = $barang->stok_s-$pesanan->stok_s;
 										$barang->stok_m = $barang->stok_m-$pesanan->stok_m;
 										$barang->stok_l = $barang->stok_l-$pesanan->stok_l;
@@ -169,6 +187,8 @@ class PengirimanController extends Controller
         }
 		*/
     }
+	
+	
 
     /**
      * Updates an existing Pengiriman model.

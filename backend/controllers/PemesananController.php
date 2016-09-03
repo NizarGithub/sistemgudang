@@ -160,17 +160,62 @@ class PemesananController extends Controller
      */
     public function actionUpdate($id)
     {
+		
 		if(\Yii::$app->user->can('updatePemesanan')){
-			$model = $this->findModel($id);
-			$list_barang = $model->getListBarang();
-			if ($model->load(Yii::$app->request->post()) && $model->save()) {
-				return $this->redirect(['view', 'id' => $model->id]);
-			} else {
-				return $this->render('update', [
-					'model' => $model,
-					'list_barang'=>$list_barang,
-				]);
+			$modelPesanan = $this->findModel($id);
+			$modelListDetile = $modelPesanan->getDetilePesanans()->all();
+			$persediaan_barang = Barang::find()->all();
+			if ($modelPesanan->load(Yii::$app->request->post())) {
+
+				$oldIDs = ArrayHelper::map($modelListDetile, 'id', 'id');
+				$modelListDetile = Model::createMultiple(DetilePesanan::classname(), $modelListDetile);
+				Model::loadMultiple($modelListDetile, Yii::$app->request->post());
+				$deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelListDetile, 'id', 'id')));
+
+				// ajax validation
+				if (Yii::$app->request->isAjax) {
+					Yii::$app->response->format = Response::FORMAT_JSON;
+					return ArrayHelper::merge(
+						ActiveForm::validateMultiple($modelListDetile),
+						ActiveForm::validate($modelPesanan)
+					);
+				}
+
+				// validate all models
+				$valid = $modelPesanan->validate();
+				$valid = Model::validateMultiple($modelListDetile) && $valid;
+
+				if ($valid) {
+					$transaction = \Yii::$app->db->beginTransaction();
+					try {
+						if ($flag = $modelPesanan->save(false)) {
+							if (! empty($deletedIDs)) {
+								DetilePesanan::deleteAll(['id' => $deletedIDs]);
+							}
+							foreach ($modelListDetile as $detile) {
+								$detile->id_pesanan = $modelPesanan->id;
+								if (! ($flag = $detile->save(false))) {
+									$transaction->rollBack();
+									break;
+								}
+							}
+						}
+						if ($flag) {
+							$transaction->commit();
+							return $this->redirect(['view', 'id' => $modelCustomer->id]);
+						}
+					} catch (Exception $e) {
+						$transaction->rollBack();
+					}
+				}
 			}
+
+			return $this->render('update', [
+				'modelPesanan' => $modelPesanan,
+				'modelListDetile' => (empty($modelListDetile)) ? [new DetilePesanan] : $modelListDetile,
+				'persediaan_barang'=>$persediaan_barang,
+			]);
+			
 		}else{
 			Yii::$app->getSession()->setFlash('error', 'Anda Tidak mempunyai hak akses untuk melakukan pengubahan data');
 			return $this->redirect(['index']);
