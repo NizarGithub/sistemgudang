@@ -31,6 +31,37 @@ class RbacController extends Controller
 		
 	}
 	
+	public function actionAuthManajemenUser(){
+		$auth = Yii::$app->authManager;
+		
+		$viewManajemen = $auth->createPermission('masukManajemen');
+		$viewManajemen->description = "Permission untuk masuk ke Menu Manajemen User";
+		$auth->add($viewManajemen);
+		
+		$hapusUser = $auth->createPermission('hapusUser');
+		$hapusUser->description = "Permission untuk menghapus User";
+		$auth->add($hapusUser);
+		
+		
+		
+		$admin = $auth->getRole('admin');
+		$auth->addChild($admin, $viewManajemen);
+		$auth->addChild($admin, $hapusUser);
+	}
+	
+	public function actionAuthManajemenUserTambah(){
+		$auth = Yii::$app->authManager;
+		
+		$tambahUser = $auth->createPermission('tambahUser');
+		$tambahUser->description = "Permission untuk Tambah User";
+		$auth->add($tambahUser);
+		
+		
+		
+		$admin = $auth->getRole('admin');
+		$auth->addChild($admin, $tambahUser);
+	}
+	
 	public function actionAuthToko(){
 		$auth = Yii::$app->authManager;		
 		

@@ -18,17 +18,7 @@ class PenerimaanController extends Controller
     /**
      * @inheritdoc
      */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
+    
 
     /**
      * Lists all Penerimaan models.
@@ -149,7 +139,7 @@ class PenerimaanController extends Controller
      */
     public function actionDelete($id)
     {
-		if(Yii::$app->user->can('deletePenerimaan')){
+		if(Yii::$app->user->can('deletePermission')){
 			$model = $this->findModel($id);
 		
 			if($model->delete() && ($model->status_penerimaan == 'diterima')){

@@ -34,6 +34,17 @@ use yii\widgets\Pjax;
 				
 			]);?>
 		<?php } ?>
+		<?php if(\Yii::$app->getSession()->hasFlash('success')){ ?>
+			
+			<?= Growl::widget([
+				'type' => Growl::TYPE_SUCCESS,
+				'title' => 'Berhasil',
+				'icon' => 'glyphicon glyphicon-exclamation-sign',
+				'body' => Yii::$app->session->getFlash('success'),
+				'showSeparator' => true,
+				
+			]);?>
+		<?php } ?>
 		
         <?= $content ?>
     </section>

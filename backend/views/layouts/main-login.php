@@ -1,7 +1,7 @@
 <?php
 use backend\assets\AppAsset;
 use yii\helpers\Html;
-
+use kartik\widgets\Growl;
 /* @var $this \yii\web\View */
 /* @var $content string */
 
@@ -20,7 +20,17 @@ dmstr\web\AdminLteAsset::register($this);
 <body class="login-page">
 
 <?php $this->beginBody() ?>
-
+	<?php if(\Yii::$app->getSession()->hasFlash('error')){ ?>
+			
+			<?= Growl::widget([
+				'type' => Growl::TYPE_DANGER,
+				'title' => 'Ada Kesalahan!',
+				'icon' => 'glyphicon glyphicon-exclamation-sign',
+				'body' => Yii::$app->session->getFlash('error'),
+				'showSeparator' => true,
+				
+			]);?>
+		<?php } ?>
     <?= $content ?>
 
 <?php $this->endBody() ?>

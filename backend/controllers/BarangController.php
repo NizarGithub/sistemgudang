@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\models\KodeJenis;
+
 /**
  * BarangController implements the CRUD actions for Barang model.
  */
@@ -30,9 +31,15 @@ class BarangController extends Controller
     }
 	
 	public function actionGetKode(){
-		$model = new Barang();
+		if(Yii::$app->user->can('viewBarang')){
+			$model = new Barang();
 		
-		return $model->generateKodeBarang();
+			return $model->generateKodeBarang();
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Anda tidak mempunyai hak akses untuk masuk ke halaman ini');
+			return $this->goHome();
+		}
+		
 	}
 
     /**
@@ -41,13 +48,19 @@ class BarangController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new BarangSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		if(Yii::$app->user->can('viewBarang')){
+			$searchModel = new BarangSearch();
+			$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+			return $this->render('index', [
+				'searchModel' => $searchModel,
+				'dataProvider' => $dataProvider,
+			]);
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Anda tidak mempunyai hak akses untuk masuk ke halaman ini');
+			return $this->goHome();
+		}
+        
     }
 
     /**
@@ -57,9 +70,15 @@ class BarangController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+		if(Yii::$app->user->can('viewBarang')){
+			return $this->render('view', [
+				'model' => $this->findModel($id),
+			]);
+		}else{
+			Yii::$app->getSession()->setFlash('error', 'Anda tidak mempunyai hak akses untuk masuk ke halaman ini');
+			return $this->goHome();
+		}
+        
     }
 
     /**
