@@ -16,6 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			<center><h1 class="panel-title"><?= Html::encode($this->title) ?></h1></center>
 		</div>
 		<div class="panel-body">
+			<?php //echo $this->render('_search', ['model' => $searchModel]); ?>
 			<?= GridView::widget([
 				'dataProvider' => $dataProvider,
 				'filterModel' => $searchModel,
@@ -70,7 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		</div>
 	</section>
     
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    
 
     
     

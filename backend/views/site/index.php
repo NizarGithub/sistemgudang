@@ -116,7 +116,7 @@
                 type: 'pie'
             },
             title: {
-                text: 'Persediaan Barang Saat ini'
+                text: 'Persentase Persediaan Barang'
             },
             tooltip: {
                 pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -141,4 +141,5 @@
 });
 JS;
 	$this->registerJs($script);
+	
 ?>

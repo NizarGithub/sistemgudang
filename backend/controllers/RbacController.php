@@ -21,8 +21,7 @@ class RbacController extends Controller
 		$deleteJenis = $auth->createPermission('deleteJenis');
 		$deleteJenis->description = "Permission untuk Menghapus Jenis";
 		$auth->add($deleteJenis);
-		
-		
+
 		$admin = $auth->getRole('admin');
 		$auth->addChild($admin, $tambahJenis);
 		$auth->addChild($admin, $updateJenis);
@@ -173,7 +172,7 @@ class RbacController extends Controller
 		$auth = Yii::$app->authManager;
 		
 		// Membuat Hak Akses untuk Barang
-		/*
+		
 		$tambahBarang = $auth->createPermission('tambahBarang');
 		$tambahBarang->description = "Penambahan Barang";
 		$auth->add($tambahBarang);
@@ -227,7 +226,7 @@ class RbacController extends Controller
 		$auth->addChild($admin, $deletePemesanan);
 		$auth->addChild($admin, $updatePemesanan);
 		$auth->addChild($admin, $user);
-		*/
+		
 		
 		$user = $auth->getRole('user');
 		$admin = $auth->getRole('admin');

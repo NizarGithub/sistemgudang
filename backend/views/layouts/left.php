@@ -19,9 +19,16 @@
 					['label' => 'Pemesanan', 'icon' => 'fa fa-shopping-basket', 'url' => ['/pemesanan'],],
 					['label' => 'Penerimaan', 'icon' => 'fa fa-cloud-download', 'url' => ['/penerimaan'],],
 					['label' => 'Pengiriman', 'icon' => 'fa fa-cloud-upload', 'url' => ['/pengiriman'],],
-											
+						
+					['label' => 'Laporan', 'options' => ['class' => 'header']],
+					['label' => 'Laporan Persediaan Barang', 'icon' => 'fa fa-suitcase', 'url' => ['/laporan-persediaan'],],
+					['label' => 'Laporan Penerimaan Barang', 'icon' => 'fa fa-cart-arrow-down', 'url' => ['/laporan-penerimaan'],],
+					
+					
 					['label' => 'Preferences', 'options' => ['class' => 'header']],
 					['label' => 'Manajemen User', 'icon' => 'fa fa-users', 'url' => ['/manajer-user']],
+					
+					
 					
                     
                 ],
