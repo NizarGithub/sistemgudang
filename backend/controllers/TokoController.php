@@ -34,7 +34,7 @@ class TokoController extends Controller
      * @return mixed
      */
     public function actionIndex()
-    {
+    {   
         $searchModel = new TokoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
