@@ -15,7 +15,8 @@ class LaporanPenerimaanSearch extends Penerimaan{
 	public function rules(){
 		return [
 			[['no_pesanan'], 'integer'],
-			[['tgl_penerimaan', 'status_penerimaan', ], 'safe'],
+
+			[['tgl_penerimaan','no_pesanan', 'status_penerimaan'], 'safe'],
 		];
 	}
 	
@@ -25,21 +26,31 @@ class LaporanPenerimaanSearch extends Penerimaan{
 	
 	public function search($param){
 		$query = Penerimaan::find();
+		$queryCart = Penerimaan::find();
 		
 		$dataProvider = new ActiveDataProvider([
 			'query'=>$query,
 			'sort'=>false,
 		]);
 		
+		$dataProviderCart = new ActiveDataProvider([
+			'query'=>$queryCart,
+			'sort'=>false,
+		]);
+
 		$this->load($param);
 		
 		if(!$this->validate()){
 			return $dataProvider;
 		}
+
+		
 		$expression = new Expression('MONTH(penerimaan.tgl_penerimaan)');
 		$query->orFilterWhere(["$expression" => $this->tgl_penerimaan]);
+
+		$queryCart->orFilterWhere(["$expression" => $this->tgl_penerimaan]);
 		
-		$dataCart = $this->getDataCart($dataProvider);
+		$dataCart = $this->getDataCart($dataProviderCart);
 		
 		$data = ['dataProvider'=>$dataProvider, 'dataCart'=>$dataCart];
 		return $data;

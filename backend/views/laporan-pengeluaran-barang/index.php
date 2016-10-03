@@ -4,7 +4,7 @@
 	use yii\helpers\Html;
 	use kartik\widgets\DatePicker;
 
-	$this->title = "Laporan Pengeluaran Barang";
+    $this->title = "Laporan Pengeluaran Barang";
 ?>
 
 <div class="row">
@@ -19,7 +19,7 @@
 						'action' => ['index'],
 						'method' => 'get',
 					]); ?>
-						<?= $form->field($searchModel, 'tgl_penerimaan')->dropDownList([''=>'Pilih Bulan',1=>'Januari', 2=>'Februari', 3=>'Maret', 4=>'April', 5=>'Mei', 6=>'Juni', 7=>'Juli', 8=>'Agustus', 9=>'September', 10=>'Oktober', 11=>'November', 12=>'Desember'])->label(false) ?>
+						<?= $form->field($searchModel, 'tgl_pengiriman')->dropDownList([''=>'Pilih Bulan',1=>'Januari', 2=>'Februari', 3=>'Maret', 4=>'April', 5=>'Mei', 6=>'Juni', 7=>'Juli', 8=>'Agustus', 9=>'September', 10=>'Oktober', 11=>'November', 12=>'Desember'])->label(false) ?>
 						
 						<?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
 					<?php ActiveForm::end()?>
@@ -28,24 +28,23 @@
 						<thead>
 							<tr>
 								<td><center>No</center></td>
-								<td><center>Nomor Pesanan</center></td>
+								<td><center>Nomor PO</center></td>
 								<td><center>Tanggal</center></td>
-								<td><center>Status</center></td>
 							</tr>
 						</thead>
 						<tbody>
 							<?php if(!($dataProvider['dataProvider']->getModels()== null)){ ?>
-								<?php foreach($dataProvider['dataProvider']->getModels() as $i => $penerimaan): ?>
+								<?php foreach($dataProvider['dataProvider']->getModels() as $i => $pengiriman): ?>
 								<tr>
 									<td width="10%"><center><?= $i + 1 ?></center></td>
-									<td><center><?= $penerimaan->getNoPesanan()->one()->no_pesanan ?></center></td>
-									<td><center><?= date('d-M-Y', strtotime($penerimaan->tgl_penerimaan)) ?></center></td>
-									<td><center><?= $penerimaan->status_penerimaan === 'diterima'? '<span class="label label-success">'.$penerimaan->status_penerimaan.'</span>' : '<span class="label label-danger">'.$penerimaan->status_penerimaan.'</span>'?></center></td>
+									<td><center><?= $pengiriman->no_pengiriman ?></center></td>
+									<td><center><?= date('d-M-Y', strtotime($pengiriman->tgl_pengiriman)) ?></center></td>
+									
 								</tr>
 								<?php endforeach; ?>
 							<?php }else{ ?>
 								<tr>
-									<td colspan="4"><center>Tidak Ada Data</center></td>
+									<td colspan="3"><center>Tidak Ada Data</center></td>
 								</tr>
 							<?php } ?>
 						</tbody>
@@ -72,7 +71,7 @@
 				type: 'column'
 			},
 			title: {
-				text: 'Data Jumlah Barang Yang Diterima Dari Supplier'
+				text: 'Data Jumlah Barang Yang Keluar'
 			},
 			
 			xAxis: {
@@ -95,7 +94,7 @@
 				enabled: false
 			},
 			tooltip: {
-				pointFormat: 'Jumlah Barang Diterima: <b>{point.y:.1f}</b>'
+				pointFormat: 'Jumlah Barang Keluar: <b>{point.y:.1f}</b>'
 			},
 			series: [{
 				name: 'Population',

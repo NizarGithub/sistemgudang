@@ -23,6 +23,7 @@
 					['label' => 'Laporan', 'options' => ['class' => 'header']],
 					['label' => 'Laporan Persediaan Barang', 'icon' => 'fa fa-suitcase', 'url' => ['/laporan-persediaan'],],
 					['label' => 'Laporan Penerimaan Barang', 'icon' => 'fa fa-cart-arrow-down', 'url' => ['/laporan-penerimaan'],],
+					['label' => 'Laporan Pengeluaran Barang', 'icon' => 'fa fa-line-chart', 'url' => ['/laporan-pengeluaran-barang'],],
 					
 					
 					['label' => 'Preferences', 'options' => ['class' => 'header']],

@@ -169,7 +169,7 @@ CREATE TABLE `barang` (
   `stok_xl` int(11) NOT NULL DEFAULT '0',
   `stok_n` int(11) NOT NULL DEFAULT '0',
   `kode_jenis` int(11) DEFAULT NULL,
-  `current_update` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `current_update` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -288,7 +288,7 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
 CREATE TABLE `penerimaan` (
   `id` int(11) NOT NULL,
   `no_pesanan` int(11) NOT NULL,
-  `tgl_penerimaan` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `tgl_penerimaan` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `status_penerimaan` enum('diterima','belum') NOT NULL DEFAULT 'belum'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -315,7 +315,7 @@ INSERT INTO `penerimaan` (`id`, `no_pesanan`, `tgl_penerimaan`, `status_penerima
 CREATE TABLE `pengiriman` (
   `id` int(11) NOT NULL,
   `no_pengiriman` varchar(20) NOT NULL,
-  `tgl_pengiriman` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `tgl_pengiriman` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `kode_toko` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
